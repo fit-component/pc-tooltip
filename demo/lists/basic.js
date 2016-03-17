@@ -4,9 +4,14 @@ import Tooltip from 'fit-tooltip'
 export default class Demo extends React.Component {
     render() {
         return (
-            <Tooltip title="提示文字">
-                鼠标移动上来,会出现提示
-            </Tooltip>
+            <div>
+                <a data-tip
+                   data-for='happyFace'> d(`･∀･)b </a>
+                <Tooltip id='happyFace'
+                              type='error'>
+                    <span>Show happy face</span>
+                </Tooltip>
+            </div>
         )
     }
 }

@@ -1,50 +1,24 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import classname from 'classnames'
-import cssStyle from './style'
+import classNames from 'classnames'
+import './index.scss'
 
-class ReactTooltip extends Component {
-    /**
-     * Class method
-     * @see ReactTooltip.hide() && ReactTooltup.rebuild()
-     */
-    static hide() {
-        /**
-         * Check for ie
-         * @see http://stackoverflow.com/questions/26596123/internet-explorer-9-10-11-event-constructor-doesnt-work
-         */
-        if (typeof window.Event === 'function') {
-            window.dispatchEvent(new window.Event('__react_tooltip_hide_event'))
-        } else {
-            let event = document.createEvent('Event')
-            event.initEvent('__react_tooltip_hide_event', false, true)
-            window.dispatchEvent(event)
-        }
+const HIDE_EVENT = '__fit__react_tooltip_hide_event'
+const REBUILD_EVENT = '__fit__react_tooltip_rebuild_event'
+
+const dispatchEvent = (eventName)=> {
+    // Check for ie
+    // @see http://stackoverflow.com/questions/26596123/internet-explorer-9-10-11-event-constructor-doesnt-work
+    if (typeof window.Event === 'function') {
+        window.dispatchEvent(new window.Event(eventName))
+    } else {
+        let event = document.createEvent('Event')
+        event.initEvent(eventName, false, true)
+        window.dispatchEvent(event)
     }
+}
 
-    static rebuild() {
-        if (typeof window.Event === 'function') {
-            window.dispatchEvent(new window.Event('__react_tooltip_rebuild_event'))
-        } else {
-            let event = document.createEvent('Event')
-            event.initEvent('__react_tooltip_rebuild_event', false, true)
-            window.dispatchEvent(event)
-        }
-    }
-
-    globalHide() {
-        if (this.mount) {
-            this.hideTooltip()
-        }
-    }
-
-    globalRebuild() {
-        if (this.mount) {
-            this.unbindListener()
-            this.bindListener()
-        }
-    }
-
+export default class Tooltip extends Component {
     constructor(props) {
         super(props)
         this._bind('showTooltip', 'updateTooltip', 'hideTooltip', 'checkStatus', 'onWindowResize', 'bindClickListener', 'globalHide', 'globalRebuild')
@@ -53,7 +27,6 @@ class ReactTooltip extends Component {
             show          : false,
             border        : false,
             multilineCount: 0,
-            placeholder   : '',
             x             : 'NONE',
             y             : 'NONE',
             place         : '',
@@ -61,30 +34,22 @@ class ReactTooltip extends Component {
             effect        : '',
             multiline     : false,
             offset        : {},
-            extraClass    : '',
-            html          : false,
             delayHide     : 0,
             delayShow     : 0,
-            event         : props.event || null
+            event         : props.event || null,
+            placeholder   : '123213'
         }
         this.delayShowLoop = null
-    }
-
-    /* Bind this with method */
-    _bind(...handlers) {
-        handlers.forEach(handler => this[handler] = this[handler].bind(this))
     }
 
     componentDidMount() {
         this.bindListener()
         this.setStyleHeader()
-        /* Add window event listener for hide and rebuild */
-        window.removeEventListener('__react_tooltip_hide_event', this.globalHide)
-        window.addEventListener('__react_tooltip_hide_event', this.globalHide, false)
 
-        window.removeEventListener('__react_tooltip_rebuild_event', this.globalRebuild)
-        window.addEventListener('__react_tooltip_rebuild_event', this.globalRebuild, false)
-        /* Add listener on window resize  */
+        window.removeEventListener(HIDE_EVENT, this.globalHide)
+        window.addEventListener(HIDE_EVENT, this.globalHide, false)
+        window.removeEventListener(REBUILD_EVENT, this.globalRebuild)
+        window.addEventListener(REBUILD_EVENT, this.globalRebuild, false)
         window.removeEventListener('resize', this.onWindowResize)
         window.addEventListener('resize', this.onWindowResize, false)
     }
@@ -103,9 +68,34 @@ class ReactTooltip extends Component {
         this.unbindListener()
         this.removeScrollListener()
         this.mount = false
-        window.removeEventListener('__react_tooltip_hide_event', this.globalHide)
-        window.removeEventListener('__react_tooltip_rebuild_event', this.globalRebuild)
+        window.removeEventListener(HIDE_EVENT, this.globalHide)
+        window.removeEventListener(REBUILD_EVENT, this.globalRebuild)
         window.removeEventListener('resize', this.onWindowResize)
+    }
+
+    static hide() {
+        dispatchEvent(HIDE_EVENT)
+    }
+
+    static rebuild() {
+        dispatchEvent(REBUILD_EVENT)
+    }
+
+    globalHide() {
+        if (this.mount) {
+            this.hideTooltip()
+        }
+    }
+
+    globalRebuild() {
+        if (this.mount) {
+            this.unbindListener()
+            this.bindListener()
+        }
+    }
+
+    _bind(...handlers) {
+        handlers.forEach(handler => this[handler] = this[handler].bind(this))
     }
 
     /* TODO: optimize, bind has been trigger too many times */
@@ -152,9 +142,7 @@ class ReactTooltip extends Component {
         }
     }
 
-    /**
-     * Get all tooltip targets
-     */
+    // Get all tooltip targets
     getTargetArray() {
         const {id} = this.props
         let targetArray
@@ -168,9 +156,7 @@ class ReactTooltip extends Component {
         return targetArray
     }
 
-    /**
-     * listener on window resize
-     */
+    // listener on window resize
     onWindowResize() {
         if (!this.mount) return
         let targetArray = this.getTargetArray()
@@ -189,9 +175,7 @@ class ReactTooltip extends Component {
         }
     }
 
-    /**
-     * Used in customer event
-     */
+    //Used in customer event
     checkStatus(e) {
         e.stopPropagation()
         if (this.state.show && e.currentTarget.getAttribute('currentItem') === 'true') {
@@ -245,20 +229,15 @@ class ReactTooltip extends Component {
             })
         }
         /* Define extra class */
-        let extraClass = e.currentTarget.getAttribute('data-class') ? e.currentTarget.getAttribute('data-class') : ''
-        extraClass = this.props.class ? this.props.class + ' ' + extraClass : extraClass
         this.setState({
-            placeholder   : tooltipText,
             multilineCount: multilineCount,
             place         : e.currentTarget.getAttribute('data-place') ? e.currentTarget.getAttribute('data-place') : (this.props.place ? this.props.place : 'top'),
             type          : e.currentTarget.getAttribute('data-type') ? e.currentTarget.getAttribute('data-type') : (this.props.type ? this.props.type : 'dark'),
             effect        : e.currentTarget.getAttribute('data-effect') ? e.currentTarget.getAttribute('data-effect') : (this.props.effect ? this.props.effect : 'float'),
             offset        : e.currentTarget.getAttribute('data-offset') ? e.currentTarget.getAttribute('data-offset') : (this.props.offset ? this.props.offset : {}),
-            html          : e.currentTarget.getAttribute('data-html') ? e.currentTarget.getAttribute('data-html') : (this.props.html ? this.props.html : false),
             delayShow     : e.currentTarget.getAttribute('data-delay-show') ? e.currentTarget.getAttribute('data-delay-show') : (this.props.delayShow ? this.props.delayShow : 0),
             delayHide     : e.currentTarget.getAttribute('data-delay-hide') ? e.currentTarget.getAttribute('data-delay-hide') : (this.props.delayHide ? this.props.delayHide : 0),
             border        : e.currentTarget.getAttribute('data-border') ? (e.currentTarget.getAttribute('data-border') === 'true') : (this.props.border ? this.props.border : false),
-            extraClass,
             multiline
         })
 
@@ -559,41 +538,7 @@ class ReactTooltip extends Component {
         if (!document.getElementsByTagName('head')[0].querySelector('style[id="react-tooltip"]')) {
             let tag = document.createElement('style')
             tag.id = 'react-tooltip'
-            tag.innerHTML = cssStyle
             document.getElementsByTagName('head')[0].appendChild(tag)
-        }
-    }
-
-    render() {
-        const {placeholder, extraClass, html} = this.state
-        let tooltipClass = classname(
-            '__react_component_tooltip',
-            {'show': this.state.show},
-            {'border': this.state.border},
-            {'place-top': this.state.place === 'top'},
-            {'place-bottom': this.state.place === 'bottom'},
-            {'place-left': this.state.place === 'left'},
-            {'place-right': this.state.place === 'right'},
-            {'type-dark': this.state.type === 'dark'},
-            {'type-success': this.state.type === 'success'},
-            {'type-warning': this.state.type === 'warning'},
-            {'type-error': this.state.type === 'error'},
-            {'type-info': this.state.type === 'info'},
-            {'type-light': this.state.type === 'light'}
-        )
-
-        if (html) {
-            return (
-                <div className={tooltipClass + ' ' + extraClass}
-                     data-id='tooltip'
-                     dangerouslySetInnerHTML={{__html: placeholder}}></div>
-            )
-        } else {
-            const content = this.props.children ? this.props.children : placeholder
-            return (
-                <div className={tooltipClass + ' ' + extraClass}
-                     data-id='tooltip'>{content}</div>
-            )
         }
     }
 
@@ -621,7 +566,37 @@ class ReactTooltip extends Component {
         return newString.join('')
     }
 
+    render() {
+        const { className, children, ...others } = this.props
+
+        const classes = classNames({
+            '_namespace'  : true,
+            'show'        : this.state.show,
+            'border'      : this.state.border,
+            'place-top'   : this.state.place === 'top',
+            'place-bottom': this.state.place === 'bottom',
+            'place-left'  : this.state.place === 'left',
+            'place-right' : this.state.place === 'right',
+            'type-dark'   : this.state.type === 'dark',
+            'type-success': this.state.type === 'success',
+            'type-warning': this.state.type === 'warning',
+            'type-error'  : this.state.type === 'error',
+            'type-info'   : this.state.type === 'info',
+            'type-light'  : this.state.type === 'light',
+            [className]   : className
+        })
+
+        return (
+            <div {...others} className={classes}>{children}</div>
+        )
+    }
 }
 
-/* export default not fit for standalone, it will exports {default:...} */
-module.exports = ReactTooltip
+Tooltip.defaultProps = {
+    // @desc 文字提示的内容
+    title: '',
+
+    // @desc 文字提示的内容,可以渲染任意文本,当没有title时生效
+    render: ()=> {
+    }
+}
