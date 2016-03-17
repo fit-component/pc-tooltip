@@ -1,6 +1,6 @@
 {
   "name": "fit-tooltip",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "文字提示",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "react-dom": "^0.14.7",
-    "classnames": "^2.2.1",
-    "react": "^0.14.7"
+    "classnames": "^2.2.1"
   }
 }
