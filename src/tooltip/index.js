@@ -52,9 +52,9 @@ Tooltip.defaultProps = {
     // @desc 控制显示位置
     position: {
         x: 'top',
-        y: 'top'
+        y: 'center'
     },
 
     // @desc 触发方式
-    trigger: 'hover'
+    trigger: 'mouseenter'
 }
