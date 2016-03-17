@@ -16,9 +16,11 @@ export default class Tooltip extends React.Component {
         this.dom = ReactDOM.findDOMNode(this)
         this.$dom = $(this.dom)
 
-        var content = this.props.title ? this.props.title : this.props.render()
+        let content = this.props.title ? this.props.title : this.props.render()
+        let type = this.props.follow ? 'Mouse' : 'Tooltip'
 
-        this.$dom.jBox('Tooltip', {
+
+        this.$dom.jBox(type, {
             content : content,
             position: this.props.position,
             trigger : this.props.trigger
@@ -51,10 +53,13 @@ Tooltip.defaultProps = {
 
     // @desc 控制显示位置
     position: {
-        x: 'top',
-        y: 'center'
+        x: 'center',
+        y: 'top'
     },
 
     // @desc 触发方式
-    trigger: 'mouseenter'
+    trigger: 'mouseenter',
+
+    // @desc 是否跟随鼠标
+    follow: false
 }

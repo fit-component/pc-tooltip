@@ -5,9 +5,9 @@ import Button from 'fit-button'
 export default class Demo extends React.Component {
     render() {
         return (
-            <Tooltip title="左侧的文字提示"
-                     position={{x:'left',y:'center'}}>
-                <Button>在左侧弹出</Button>
+            <Tooltip title="跟随鼠标的提示文字"
+                     follow={true}>
+                <Button>跟随鼠标</Button>
             </Tooltip>
         )
     }
