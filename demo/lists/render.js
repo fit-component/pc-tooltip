@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from 'fit-button'
 import Tooltip from 'fit-tooltip'
 
 export default class Demo extends React.Component {
@@ -13,8 +14,8 @@ export default class Demo extends React.Component {
 
     render() {
         return (
-            <Tooltip render={this.customRender.bind(this)}>
-                渲染任意内容
+            <Tooltip render={this.customRender}>
+                <Button>渲染复杂文本</Button>
             </Tooltip>
         )
     }
