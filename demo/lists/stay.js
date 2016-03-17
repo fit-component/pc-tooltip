@@ -5,10 +5,9 @@ import Button from 'fit-button'
 export default class Demo extends React.Component {
     render() {
         return (
-            <Tooltip title="左侧的文字提示"
-                     position={{x:'left',y:'center'}}
-                     outside="x">
-                <Button>在左侧弹出</Button>
+            <Tooltip title="可以被选中"
+                     stay={true}>
+                <Button>移上来,可以选中文字提示</Button>
             </Tooltip>
         )
     }

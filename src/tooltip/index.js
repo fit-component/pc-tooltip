@@ -19,11 +19,11 @@ export default class Tooltip extends React.Component {
         let content = this.props.title ? this.props.title : this.props.render()
         let type = this.props.follow ? 'Mouse' : 'Tooltip'
 
-
         this.$dom.jBox(type, {
-            content : content,
-            position: this.props.position,
-            trigger : this.props.trigger
+            content          : content,
+            position         : this.props.position,
+            trigger          : this.props.trigger,
+            closeOnMouseleave: !this.props.stay
         })
     }
 
@@ -61,5 +61,11 @@ Tooltip.defaultProps = {
     trigger: 'mouseenter',
 
     // @desc 是否跟随鼠标
-    follow: false
+    follow: false,
+
+    // @desc 相对于内容,在外部移动文字提示的相对位置
+    outside: 'x',
+
+    // @desc 鼠标移动到文字提示上,文字提示是否还显示
+    stay: false
 }
