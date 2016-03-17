@@ -20,7 +20,8 @@ export default class Tooltip extends React.Component {
 
         this.$dom.jBox('Tooltip', {
             content : content,
-            position: this.props.position
+            position: this.props.position,
+            trigger : this.props.trigger
         })
     }
 
@@ -50,7 +51,10 @@ Tooltip.defaultProps = {
 
     // @desc 控制显示位置
     position: {
-        x: 'left',
+        x: 'top',
         y: 'top'
-    }
+    },
+
+    // @desc 触发方式
+    trigger: 'hover'
 }
