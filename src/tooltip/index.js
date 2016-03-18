@@ -2,9 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import classNames from 'classnames'
 import $ from 'jquery'
+import 'jbox'
 import './index.scss'
-import './jbox'
-import './jbox.scss'
 
 export default class Tooltip extends React.Component {
     constructor(props) {
@@ -16,15 +15,22 @@ export default class Tooltip extends React.Component {
         this.dom = ReactDOM.findDOMNode(this)
         this.$dom = $(this.dom)
 
-        let content = this.props.title ? this.props.title : this.props.render()
+        let content = this.props.title
         let type = this.props.follow ? 'Mouse' : 'Tooltip'
 
-        this.$dom.jBox(type, {
+        this.jbox = this.$dom.jBox(type, {
             content          : content,
-            position         : this.props.position,
+            position         : !this.props.follow && this.props.position,
             trigger          : this.props.trigger,
-            closeOnMouseleave: !this.props.stay
+            closeOnMouseleave: this.props.stay,
+            zIndex           : this.props.zIndex,
+            adjustPosition   : true,
+            adjustTracker    : true
         })
+    }
+
+    componentWillUnmount() {
+        this.jbox.destroy()
     }
 
     render() {
@@ -47,10 +53,6 @@ Tooltip.defaultProps = {
     // @desc 文字提示的内容
     title: null,
 
-    // @desc 文字提示的内容,回调函数返回渲染的dom结构,不设置title时才生效
-    render: ()=> {
-    },
-
     // @desc 控制显示位置
     position: {
         x: 'center',
@@ -64,8 +66,11 @@ Tooltip.defaultProps = {
     follow: false,
 
     // @desc 相对于内容,在外部移动文字提示的相对位置
-    outside: 'x',
+    outside: 'y',
 
     // @desc 鼠标移动到文字提示上,文字提示是否还显示
-    stay: false
+    stay: false,
+
+    // @desc 层级
+    zIndex: 999
 }
