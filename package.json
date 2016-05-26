@@ -1,6 +1,6 @@
 {
   "name": "fit-tooltip",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "文字提示",
   "main": "lib/index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "react-dom": "^15.0.1",
     "classnames": "^2.2.3",
     "jquery": "^2.1.4",
-    "jbox": "^0.3.2"
+    "jbox": "^0.3.2",
+    "typings": "lib/index.d.ts"
   }
 }
