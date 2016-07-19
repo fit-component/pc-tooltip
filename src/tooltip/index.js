@@ -42,7 +42,7 @@ export default class Tooltip extends React.Component {
         })
 
         return (
-            <div {...others} className={classes}>
+            <div className={classes}>
                 {this.props.children}
             </div>
         )
