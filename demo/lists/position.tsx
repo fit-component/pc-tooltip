@@ -1,8 +1,8 @@
-import React from 'react'
-import Tooltip from 'fit-tooltip'
-import Button from 'fit-button'
+import * as React from 'react'
+import Tooltip from '../../src'
+import Button from '../../../button/src'
 
-export default class Demo extends React.Component {
+export default class Demo extends React.Component <any, any> {
     render() {
         return (
             <Tooltip title="右上的文字提示"
